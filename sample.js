@@ -1,4 +1,13 @@
-const fruits = ["Banana", "Orange", "Apple", "Mango"];
-fruits.fill(0);
+const person1 = {
+    firstName: "John",
+    lastName: "Doe",
+    age: 50,
+    eyeColor: "blue"
+  };
 
-console.log(fruits)
+//   const result = Object.keys(person1)
+//   console.log(result)
+
+for(const keys in person1){
+    console.log(person1[keys])
+}

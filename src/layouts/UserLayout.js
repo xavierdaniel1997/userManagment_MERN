@@ -9,6 +9,6 @@ const UserLayout = () => {
         <Outlet/>
     </div>
   )
-}
+} 
 
 export default UserLayout

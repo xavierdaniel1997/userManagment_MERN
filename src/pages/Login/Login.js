@@ -3,6 +3,7 @@ import {Link, useNavigate} from "react-router-dom";
 import { validateFormSignUp } from "../../utils/validateForm";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const Login = () => {
   const [errors, setErrors] = useState({})
@@ -17,21 +18,19 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
   }; 
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const validateError = validateFormSignUp(formData)
     setErrors(validateError)
     if(Object.keys(validateError).length===0){
       try{
-        const response = await fetch("http://localhost:4000/api/users/login", {
-          method: "POST",
+        const response = await axios.post("http://localhost:4000/api/users/login", formData, {
           headers: {
             "Content-Type" : "application/json"
           },
-          body: JSON.stringify(formData)
         })
-        const data = await response.json()
-        if(response.ok){
+        if(response.status===200){
           toast.success("Login successfully")
           setFormData({
             email: "",
@@ -40,10 +39,11 @@ const Login = () => {
           setTimeout(() => {
             navigate("/")
           }, 700)
-          console.log("Login successfully", data)
+          console.log("Login successfully", response.data)
+          localStorage.setItem("token", response.data.token)
         }else{
-          console.log("login failed", data);
-          toast.error(data.message)
+          console.log("login failed", response.data);
+          toast.error(response.data.message)
         }
       }catch(error){
         toast.error(`Login failed ${error.message}`)
@@ -51,6 +51,7 @@ const Login = () => {
       }
     }
   };
+  
   return (
     <div className="min-h-screen flex flex-col sm:flex-row">
       <div className="flex flex-1 justify-center items-center bg-gray-100">

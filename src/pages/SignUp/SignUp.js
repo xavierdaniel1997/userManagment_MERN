@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import {validateFormRegister} from "../../utils/validateForm";
 import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const SignUp = () => {
   const [errors, setErrors] = useState({});
@@ -13,7 +14,7 @@ const SignUp = () => {
     password: "",
     cpassword: "",
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -21,6 +22,9 @@ const SignUp = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  //using fetch
+  /*
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validateError = validateFormRegister(formData);
@@ -55,6 +59,44 @@ const SignUp = () => {
         } else {
           toast.error("user alread exist");
           console.log("failed", data);
+        }
+      } catch (error) {
+        toast.error(`Registration failed: ${error.message}`);
+        console.error(error);
+      }
+    }
+  };*/
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validateError = validateFormRegister(formData);
+    setErrors(validateError);
+    if (Object.keys(validateError).length === 0) {
+      try {
+        const response = await axios.post(
+          "http://localhost:4000/api/users/register",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.status===200) {
+          toast.success("User added successfully");
+          setFormData({
+            fname: "",
+            sname: "",
+            email: "",
+            password: "",
+            cpassword: "",
+          });
+          setTimeout(() => {
+            navigate("/sign-in");
+          }, 800);
+        } else {
+          toast.error("User already exists");
+          console.log("Failed", response.data);
         }
       } catch (error) {
         toast.error(`Registration failed: ${error.message}`);

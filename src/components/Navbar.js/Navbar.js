@@ -3,6 +3,10 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+  }
+
     return (
         <nav className="bg-white px-20 py-4 flex justify-between items-center shadow-md">
       <div className="flex items-center">
@@ -25,7 +29,7 @@ const Navbar = () => {
         </div>
         <Link to="/sign-in">
         <div className="flex align-middle">
-          <button className="font-bold">LOGOUT</button>
+          <button className="font-bold" onClick={handleLogout}>LOGOUT</button>
            <MdKeyboardArrowDown className="text-gray-800 h-6 w-6"/>
            </div>
            </Link>
